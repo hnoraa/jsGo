@@ -46,6 +46,19 @@
             height: 20px;
             content: " ";
         }
+        .square {
+            height: 20px;
+            width: 20px;
+            background-color: #deb887;
+        }
+        .circle {
+        }
+        .circleBlack {
+            color: #000000;
+        }
+        .circleWhite {
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -84,12 +97,6 @@
     var canvas = null;
     var gridSize = 19;
     var playingField = new Array(gridSize);
-
-    var squareObj = {
-        location = null,
-        type = null,
-        svg = null
-    };
 
     window.onload = function(event) {
         canvas = document.getElementById("canvas");
@@ -150,9 +157,11 @@
             playingField[i] = new Array(gridSize);
             for(var j = 0; j < gridSize; j++) {
                 var id = i + '-' + j;
-                squareObj.location = id;
-                squareObj.type = "blank";
-                squareObj.svg = crossSVG(id);
+                var squareObj = {
+                    location: id,
+                    type: "blank",
+                    svg: crossSVG(id)
+                };
 
                 playingField[i][j] = squareObj;
             }
@@ -175,19 +184,21 @@
     function clickSquare(id) {
         var svg = null;
         var squarePos = id.split('-').map(Number);
-        console.log(squarePos);
-
-        if(playerOne) {
-            svg = crossBlackCircleSVG(id);
-        } else {
-            svg = crossWhiteCircleSVG(id);
-        }
 
         for(var i = 0; i < gridSize; i++) {
             if(squarePos[0] == i) {
                 for(var j = 0; j < gridSize; j++) {
                     if(squarePos[1] == j) {
+                        
+                        if(playerOne) {
+                            svg = crossBlackCircleSVG(id);
+                        } else {
+                            svg = crossWhiteCircleSVG(id);
+                        }
                         playingField[i][j].svg = svg;
+
+                        console.log(playingField[i][j].svg);
+                        console.log(type (playingField[i][j]));
                     }
                 }
             }
@@ -198,15 +209,15 @@
     }
 
     function crossSVG(id) {
-        return '<svg id="' + id + '" class="squareBlank" height="20" width="20" style="background-color:#deb887;" onclick="clickSquare(\'' + id + '\')"><line x1="10" y1="0" x2="10" y2="20" style="stroke:rgb(0,0,0); stroke-width:2"/><line x1="0" y1="10" x2="20" y2="10" style="stroke:rgb(0,0,0); stroke-width:2"/><circle cx="10" cy="10" r="5" fill="black"/></svg>';
+        return '<svg id="' + id + '" class="squareBlank square" onclick="clickSquare(\'' + id + '\')"><line x1="10" y1="0" x2="10" y2="20" style="stroke:rgb(0,0,0); stroke-width:2"/><line x1="0" y1="10" x2="20" y2="10" style="stroke:rgb(0,0,0); stroke-width:2"/><circle cx="10" cy="10" r="5" fill="black"/></svg>';
     }
 
     function crossBlackCircleSVG(id) {
-        return '<svg id="' + id + '" class="squareBlack" height="20" width="20" style="background-color:#deb887;"><circle cx="10" cy="10" r="10" fill="black"/></svg>';
+        return '<svg id="' + id + '" class="squareBlack square"><circle class="circleBlack circle" cx="10" cy="10" r="10"/></svg>';
     }
 
     function crossWhiteCircleSVG(id) {
-        return '<svg id="' + id + '" class="squareWhite" height="20" width="20" style="background-color:#deb887;"><circle cx="10" cy="10" r="10" fill="white"/></svg>';
+        return '<svg id="' + id + '" class="squareWhite square"><circle class="circleWhite circle" cx="10" cy="10" r="10"/></svg>';
     }
 </script>
 </html>
