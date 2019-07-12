@@ -1,5 +1,6 @@
 <!doctype hmtl>
 <html lang="en">
+
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
@@ -7,79 +8,91 @@
     <title>GO</title>
 
     <style src="text/css">
-        html, body {
+        html,
+        body {
             height: 100%;
             width: 85%;
         }
+
         html {
             display: table;
             margin: auto;
             font-family: 'Courier New', Courier, monospace
         }
+
         body {
             display: table-cell;
             vertical-align: middle;
         }
+
         .title {
             background-color: #dbdbdb;
             text-align: center;
             height: 5%;
             padding: 2px;
         }
+
         .player {
             background-color: #dbdbdb;
         }
+
         .canvas {
             min-height: 80%;
             border: 1px solid #dbdbdb;
             padding: 5px;
         }
+
         .actions {
             margin: 0 auto;
         }
+
         .debug {
             color: #ff0000;
         }
+
         .cross {
             border: 1px solid #000000;
             width: 20px;
             height: 20px;
             content: " ";
         }
+
         .square {
             height: 20px;
             width: 20px;
             background-color: #deb887;
         }
-        .circle {
-        }
+
         .circleBlack {
-            color: #000000;
+            fill: #000000;
         }
+
         .circleWhite {
-            color: #ffffff;
+            fill: #ffffff;
         }
     </style>
 </head>
+
 <body>
     <div class="title">
         <h3>GO&nbsp;<small id="debugMessage" class="debug">Developer mode enabled!</small></h3>
     </div>
     <div class="player">
         <div class="info">
-                Current Player: <span id="txtPlayer"></span><br />
-                Your Score: <span id="txtScore"></span>
+            Current Player: <span id="txtPlayer"></span><br />
+            Your Score: <span id="txtScore"></span>
         </div>
         <div class="actions">
-            <input id="chxToggleDev" type="checkbox" name="toggleDev" value="dev" onchange="toggleDeveloperMode(this)"> Dev Mode?
-            <button id="btnTogglePlayer" type="button" class="debug" onclick="togglePlayer(this)">Toggle Player</button> 
-            <button id="btnChangeScore" type="button" class="debug" onclick="changeScore(this)">Change Score</button> 
+            <input id="chxToggleDev" type="checkbox" name="toggleDev" value="dev" onchange="toggleDeveloperMode(this)">
+            Dev Mode?
+            <button id="btnTogglePlayer" type="button" class="debug" onclick="togglePlayer(this)">Toggle Player</button>
+            <button id="btnChangeScore" type="button" class="debug" onclick="changeScore(this)">Change Score</button>
             <button id="btnGiveUp" type="btnGiveUp" onclick="reset(this)">Give Up</button>
-            <button id="btnNewGame" type="btnNewGame" onclick="reset(this)">New Game</button>  
+            <button id="btnNewGame" type="btnNewGame" onclick="reset(this)">New Game</button>
         </div>
     </div>
     <div id="canvas" class="canvas">
-        
+
     </div>
 </body>
 <script type="text/javascript">
@@ -98,13 +111,13 @@
     var gridSize = 19;
     var playingField = new Array(gridSize);
 
-    window.onload = function(event) {
+    window.onload = function (event) {
         canvas = document.getElementById("canvas");
 
         btnTogglePlayer = document.getElementById("btnTogglePlayer");
         btnChangeScore = document.getElementById("btnChangeScore");
         debugMessage = document.getElementById("debugMessage");
-        chxToggleDev = document.getElementById("chxToggleDev"); 
+        chxToggleDev = document.getElementById("chxToggleDev");
         txtPlayer = document.getElementById("txtPlayer");
         txtScore = document.getElementById("txtScore");
 
@@ -139,7 +152,7 @@
     }
 
     function reset(element) {
-        if(element.id == "btnGiveUp") {
+        if (element.id == "btnGiveUp") {
             alert("Give up?");
         } else {
             alert("Reset?");
@@ -153,9 +166,9 @@
     }
 
     function initGrid() {
-        for(var i = 0; i < gridSize; i++) {
+        for (var i = 0; i < gridSize; i++) {
             playingField[i] = new Array(gridSize);
-            for(var j = 0; j < gridSize; j++) {
+            for (var j = 0; j < gridSize; j++) {
                 var id = i + '-' + j;
                 var squareObj = {
                     location: id,
@@ -173,8 +186,8 @@
     function genPlayfield() {
         canvas.innerHTML = "";
 
-        for(var i = 0; i < gridSize; i++) {
-            for(var j = 0; j < gridSize; j++) {
+        for (var i = 0; i < gridSize; i++) {
+            for (var j = 0; j < gridSize; j++) {
                 canvas.innerHTML += playingField[i][j].svg;
             }
             canvas.innerHTML += "<br />";
@@ -182,28 +195,26 @@
     }
 
     function clickSquare(id) {
-        var svg = null;
+        var svg = "";
         var squarePos = id.split('-').map(Number);
 
-        for(var i = 0; i < gridSize; i++) {
-            if(squarePos[0] == i) {
-                for(var j = 0; j < gridSize; j++) {
-                    if(squarePos[1] == j) {
-                        
-                        if(playerOne) {
-                            svg = crossBlackCircleSVG(id);
-                        } else {
-                            svg = crossWhiteCircleSVG(id);
-                        }
-                        playingField[i][j].svg = svg;
+        if (playerOne) {
+            svg = crossBlackCircleSVG(id);
+        } else {
+            svg = crossWhiteCircleSVG(id);
+        }
 
-                        console.log(playingField[i][j].svg);
-                        console.log(type (playingField[i][j]));
+        for (var i = 0; i < gridSize; i++) {
+            if (squarePos[0] == i) {
+                for (var j = 0; j < gridSize; j++) {
+                    if (squarePos[1] == j) {
+                        playingField[i][j].svg = svg;
+                        playingField[i][j].type = playerOne ? "black" : "white";
                     }
                 }
             }
         }
-        
+
         genPlayfield();
         togglePlayer(null);
     }
@@ -213,11 +224,12 @@
     }
 
     function crossBlackCircleSVG(id) {
-        return '<svg id="' + id + '" class="squareBlack square"><circle class="circleBlack circle" cx="10" cy="10" r="10"/></svg>';
+        return '<svg id="' + id + '" class="squareBlack square"><circle class="circleBlack" cx="10" cy="10" r="10"/></svg>';
     }
 
     function crossWhiteCircleSVG(id) {
-        return '<svg id="' + id + '" class="squareWhite square"><circle class="circleWhite circle" cx="10" cy="10" r="10"/></svg>';
+        return '<svg id="' + id + '" class="squareWhite square"><circle class="circleWhite" cx="10" cy="10" r="10"/></svg>';
     }
 </script>
+
 </html>
